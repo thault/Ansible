@@ -1,0 +1,23 @@
+- hosts: switches
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - name: Ensure GigabitEthernet 0/47 has access to VLAN 30
+      cisco.ios.ios_l2_interface:
+        name: GigabitEthernet0/47
+        mode: access
+        access_vlan: 30
+
+    - name: Ensure GigabitEthernet 0/48 has access to VLAN 20
+      cisco.ios.ios_l2_interface:
+        name: GigabitEthernet0/48
+        mode: access
+        access_vlan: 20
+
+    - name: Ensure GigabitEthernet0/46 only has vlans 10,20 native 10
+      cisco.ios.ios_l2_interface:
+        name: GigabitEthernet0/46
+        mode: trunk
+        native_vlan: 10
+        trunk_allowed_vlans: 10,20
