@@ -1,0 +1,74 @@
+#################################################
+# DO Community Playbooks: Initial Server Setup
+#################################################
+---
+- hosts: all
+  become: true
+  vars_files:
+    - ./vars/InitialConfig.yaml
+
+  tasks:
+    - name: Install Prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+    # Sudo Group Setup
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    # User + Key Setup
+    - name: Create ansible service user with sudo privileges
+      user:
+        name: "{{ service_account }}"
+        state: present
+        groups: wheel
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: Set authorized key for service user
+      authorized_key:
+        user: "{{ service_account }}"
+        state: present
+        key: "{{ service_key }}"
+
+    - name: Create user for me with sudo privileges
+      user:
+        name: "{{ local_user }}"
+        state: present
+        groups: wheel
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: Set authorized key for local user
+      authorized_key:
+        user: "{{ local_user }}"
+        state: present
+        key: "{{ user_key }}"
+
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+
+    # Install Packages
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install required system packages
+      apt: name={{ sys_packages }} state=latest
+
+    - name: Unconditionally reboot the machine with all defaults
+      reboot:

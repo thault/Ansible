@@ -1,0 +1,5 @@
+---
+glusterfs_daemon: glusterd
+gluster_brick_name: testBrick
+gluster_brick_dir: /data/brick1
+glust_host: 10.1.3.124

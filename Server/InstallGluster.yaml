@@ -1,0 +1,63 @@
+---
+- hosts: gluster
+  become: true
+  vars_files:
+    - vars/GlusterVars.yaml
+
+  tasks:
+    - name: Ensure dependencies are installed.
+      apt:
+        name: dirmngr
+        state: present
+
+    - name: Ensure PPA for GlusterFS is present.
+      apt_repository:
+        repo: 'ppa:gluster/glusterfs-7'
+        state: present
+        update_cache: true
+      register: glusterfs_ppa_added
+      when: true
+
+    - name: Ensure GlusterFS will reinstall if the PPA was just added.
+      apt:
+        name:
+          - glusterfs-server
+          - glusterfs-client
+        state: absent
+      when: glusterfs_ppa_added.changed
+      tags: ['skip_ansible_lint']
+
+    - name: Ensure GlusterFS is installed.
+      apt:
+        name:
+          - glusterfs-server
+          - glusterfs-client
+        state: present
+        default_release: ""
+
+    - name: Ensure GlusterFS is started and enabled at boot.
+      service: "name={{ glusterfs_daemon }} state=started enabled=yes"
+
+    - name: Create a xfs filesystem on /dev/sdb
+      community.general.filesystem:
+        fstype: xfs
+        dev: /dev/sdb
+
+    - name: Mount new harddrive
+      ansible.posix.mount:
+        path: /data/brick1
+        src: /dev/sdb
+        fstype: xfs
+        opts: defaults
+        state: mounted
+
+    - name: Configure Gluster volume.
+      gluster_volume:
+        state: present
+        name: "{{ gluster_brick_name }}"
+        brick: "{{ gluster_brick_dir }}"
+        replicas: 3
+        cluster: "{{ groups.gluster | join(',') }}"
+        host: "{{ inventory_hostname }}"
+        force: yes
+      run_once: true

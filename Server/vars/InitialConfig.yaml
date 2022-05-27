@@ -1,0 +1,9 @@
+---
+service_account: ansibleService
+local_user: tha
+service_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/serverManager.pub') }}"
+user_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/localUser.pub') }}"
+#sys_packages: [ 'curl', 'vim', 'git']
+sys_packages: []
+ansible_ssh_user: "thault"
+ansible_ssh_private_key_file: "/Users/tylerault/.ssh/ServerManger"
