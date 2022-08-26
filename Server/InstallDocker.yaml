@@ -27,3 +27,14 @@
 
     - name: Update apt and install docker-ce
       apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Make sure we have a 'docker' group
+      group:
+        name: docker
+        state: present
+
+    - name: Add my user to the docker group
+      user:
+        name: "tha"
+        groups: docker
+        append: true
