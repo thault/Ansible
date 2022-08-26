@@ -11,3 +11,7 @@
         name: "thault"
         state: absent
         remove: true
+
+#    - name: Set a hostname
+#      ansible.builtin.hostname:
+#ls        name:
