@@ -30,4 +30,8 @@
               allowed_vlans: 10,20,30,40,50
               native_vlan: 20
               encapsulation: dot1q
+          - name: GigabitEthernet1/0/24
+            mode: access
+            access:
+              vlan: 40
         state: replaced
