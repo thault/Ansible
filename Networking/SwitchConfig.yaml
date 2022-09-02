@@ -7,33 +7,37 @@
       cisco.ios.ios_lag_interfaces:
         config:
           - name: Port-channel01
-            - member: GigabitEthernet1/0/1
-              mode: auto
-            - member: GigabitEthernet1/0/2
-              mode: auto
-            - member: GigabitEthernet1/0/3
-              mode: auto
-            - member: GigabitEthernet1/0/4
-              mode: auto
+            members:
+              - member: GigabitEthernet1/0/1
+                mode: auto
+              - member: GigabitEthernet1/0/2
+                mode: auto
+              - member: GigabitEthernet1/0/3
+                mode: auto
+              - member: GigabitEthernet1/0/4
+                mode: auto
 
           - name: Port-channel02
-            - member: GigabitEthernet1/0/9
-              mode: auto
-            - member: GigabitEthernet1/0/10
-              mode: auto
+            members:
+              - member: GigabitEthernet1/0/9
+                mode: auto
+              - member: GigabitEthernet1/0/10
+                mode: auto
 
           - name: Port-channel03
-            - member: GigabitEthernet1/0/11
-              mode: auto
-            - member: GigabitEthernet1/0/12
-              mode: auto
+            members:
+              - member: GigabitEthernet1/0/11
+                mode: auto
+              - member: GigabitEthernet1/0/12
+                mode: auto
 
           - name: Port-channel04
-            - member: GigabitEthernet1/0/13
-              mode: auto
-            - member: GigabitEthernet1/0/14
-              mode: auto
-        state: redered
+            members:
+              - member: GigabitEthernet1/0/13
+                mode: auto
+              - member: GigabitEthernet1/0/14
+                mode: auto
+        state: rendered
 
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_l2_interfaces:
