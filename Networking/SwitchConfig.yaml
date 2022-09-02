@@ -66,12 +66,6 @@
               allowed_vlans: 1,10,20,30,40,50
               native_vlan: 1
               encapsulation: dot1q
-          - name: GigabitEthernet1/0/32
-            mode: trunk
-            trunk:
-              allowed_vlans: 10,20,30,40,50
-              native_vlan: 20
-              encapsulation: dot1q
           - name: GigabitEthernet1/0/48
             mode: access
             access:
